@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class InputManager : MonoBehaviour
 {
+    public static InputManager Instance;
+
     PlayerInput input;
     PlayerLocomotion playerLocomotion;
     public AnimatorManager animatorManager;
@@ -19,12 +21,15 @@ public class InputManager : MonoBehaviour
     public float horizontalInput;
 
     public bool sprint_Input;
-    public bool jump_Input;
-    public bool battleState_Input;
+
+    public bool shoot_Input;
+    public bool scope_Input;
+    public bool reload_Input;
 
 
     private void Awake()
     {
+        Instance = this;
         playerLocomotion = GetComponent<PlayerLocomotion>();
     }
 
@@ -40,9 +45,12 @@ public class InputManager : MonoBehaviour
             input.PlayerActions.Sprint.performed += ctx => sprint_Input = true;
             input.PlayerActions.Sprint.canceled += ctx => sprint_Input = false;
 
-            input.PlayerActions.Jump.performed += ctx => jump_Input = true;
+            input.PlayerActions.Shoot.performed += ctx => shoot_Input = true;
 
-            input.PlayerActions.BattleState.performed += ctx => battleState_Input = true;
+            input.PlayerActions.Scope.performed += ctx => scope_Input = true;
+            input.PlayerActions.Scope.canceled += ctx => scope_Input = false;
+            
+            input.PlayerActions.Reload.performed += ctx => scope_Input = true;
         }
 
         input.Enable();
@@ -56,9 +64,9 @@ public class InputManager : MonoBehaviour
     public void AllInputs()
     {
         MovementInput();
-        SprintInput();
-        JumpingInput();
-        //BattleStateInput();
+        ShootInput();
+        ScopeInput();
+        ReloadInput();
     }
 
     private void MovementInput()
@@ -73,33 +81,27 @@ public class InputManager : MonoBehaviour
         animatorManager.UpdateAnimatorValues(0, moveAmount, playerLocomotion.isSprinting);
     }
 
-    private void SprintInput()
+    private void ShootInput()
     {
-        if (sprint_Input && moveAmount > 0.5f)
+        if (shoot_Input)
         {
-            playerLocomotion.isSprinting = true;
-        }
-        else
-        {
-            playerLocomotion.isSprinting = false;
+            shoot_Input = false;
         }
     }
 
-    private void JumpingInput()
+    private void ScopeInput()
     {
-        if (jump_Input)
+        if (scope_Input)
         {
-            jump_Input = false;
-            playerLocomotion.Jumping();
+            scope_Input = false;
         }
     }
 
-    private void BattleStateInput()
+    private void ReloadInput()
     {
-        if (battleState_Input)
+        if (reload_Input)
         {
-            battleState_Input = false;
-            playerLocomotion.BattleState();
+            reload_Input = false;
         }
     }
 

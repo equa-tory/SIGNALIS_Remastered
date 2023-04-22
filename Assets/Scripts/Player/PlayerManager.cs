@@ -19,10 +19,6 @@ public class PlayerManager : MonoBehaviour
 
     private void Update()
     {
-
-        //DebugRestart
-        if (Input.GetKeyDown(KeyCode.R)) UnityEngine.SceneManagement.SceneManager.LoadScene(0);
-
         inputManager.AllInputs();
     }
 

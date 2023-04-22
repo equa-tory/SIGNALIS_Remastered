@@ -217,18 +217,27 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Jump",
+                    "name": "Shoot",
                     "type": "Button",
-                    "id": "bf043310-aac9-4559-8183-03565275de23",
+                    "id": "e68ac808-0f89-43b3-a741-41c60e9b5c86",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
                 },
                 {
-                    "name": "BattleState",
+                    "name": "Scope",
                     "type": "Button",
-                    "id": "65907ae4-787c-4c30-99f0-5240dae1f24e",
+                    "id": "3965537a-5d91-4e67-855e-de408ecd9982",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Reload",
+                    "type": "Button",
+                    "id": "35d8405f-07b9-4e0b-905a-fa117c9f8282",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -260,23 +269,67 @@
                 },
                 {
                     "name": "",
-                    "id": "13f2c951-1885-46ac-bde6-92308e0b36c7",
-                    "path": "<Gamepad>/leftShoulder",
+                    "id": "9c4b171c-6848-4bcc-a99c-62fd213c6598",
+                    "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "BattleState",
+                    "action": "Shoot",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "d985a1a3-560e-4dd7-8841-dc1b4d2eb404",
-                    "path": "<Keyboard>/ctrl",
+                    "id": "ec74197b-97f3-46d7-9521-d1f79b2a4e04",
+                    "path": "<Gamepad>/rightTrigger",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "BattleState",
+                    "action": "Shoot",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "034b0fdf-800b-4ed4-ba32-42468d492686",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Scope",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "48ac9d58-efb7-49a9-a613-532ba0d2f133",
+                    "path": "<Gamepad>/leftTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Scope",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "93eff114-ad37-4d7c-9716-60ccd549cafc",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Reload",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3ace5669-4306-43fc-8780-eee353bad457",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Reload",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

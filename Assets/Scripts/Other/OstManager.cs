@@ -11,6 +11,7 @@ public class OstManager : MonoBehaviour
     public AudioClip[] ost;
     int choosedOst;
 
+    bool nextOstStarted;
 
     private void Awake()
     {
@@ -21,15 +22,17 @@ public class OstManager : MonoBehaviour
 
     private void Update()
     {
-        if (source.time >= ost[choosedOst].length + 1f) NextOst();
-        if (choosedOst >= ost.Length - 1) choosedOst = 0;
-
+        if(Input.GetKeyDown(KeyCode.T)) source.time = ost[choosedOst].length - 2f;
+        if (source.time >= ost[choosedOst].length && !nextOstStarted) { Invoke(nameof(NextOst),1f); nextOstStarted = true; }
     }
 
     public void NextOst()
     {
         choosedOst++;
+        if (choosedOst >= ost.Length) choosedOst = 0;
         PlayOst(ost[choosedOst]);
+
+        nextOstStarted=false;
     }
 
     private void PlayOst(AudioClip _clip)

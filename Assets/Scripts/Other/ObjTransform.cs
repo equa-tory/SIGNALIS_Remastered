@@ -4,10 +4,9 @@ using UnityEngine;
 
 public class ObjTransform : MonoBehaviour {
 
-    public Transform target1;
-    public Transform target2;
+    public Transform target;
     public Vector3 posOffset;
-    public Quaternion rotOffset;
+    public Quaternion rotOffset = Quaternion.identity;
 
     public bool onlyPos;
 
@@ -16,14 +15,14 @@ public class ObjTransform : MonoBehaviour {
 
         if (onlyPos)
         {
-            transform.position = target1.transform.position + posOffset;
+            transform.position = target.transform.position + posOffset;
         }
         else
         {
-            var targetPos = target1.position - posOffset;
-            var targetRot = target1.rotation * rotOffset;
+            var targetPos = target.position - posOffset;
+            var targetRot = target.rotation * rotOffset;
             
-            transform.position = RotatePointAroundPivot(targetPos, target1.position, targetRot);
+            transform.position = RotatePointAroundPivot(targetPos, target.position, targetRot);
             transform.localRotation = targetRot;
         }
     }

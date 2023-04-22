@@ -9,6 +9,7 @@ public class CameraManager : MonoBehaviour
     public Transform targetTransform;
     public Transform cameraPivot;
     public Transform cam;
+    public Vector3 offset;
     public LayerMask collisionLayer;
     private float defaultPosition;
     private Vector3 cameraFollowVelocity = Vector3.zero;
@@ -56,15 +57,15 @@ public class CameraManager : MonoBehaviour
         pivotAngel = pivotAngel - (input.cameraInputY * cameraPivotSpeed);
         pivotAngel = Mathf.Clamp(pivotAngel, minimumPivotAngle, maximumPivotAngle);
 
-        rotation = Vector3.zero;
-        rotation.y = lookAngel;
-        targetRot = Quaternion.Euler(rotation);
-        transform.rotation = targetRot;
+        // rotation = Vector3.zero;
+        // targetRot = Quaternion.Euler(rotation);
+        // transform.rotation = targetRot;
 
         rotation = Vector3.zero;
+        rotation.y = lookAngel;
         rotation.x = pivotAngel;
         targetRot = Quaternion.Euler(rotation);
-        cameraPivot.localRotation = targetRot;
+        transform.localRotation = targetRot;
     }
 
     private void CameraCollision()
@@ -77,7 +78,7 @@ public class CameraManager : MonoBehaviour
         if (Physics.SphereCast
             (cameraPivot.position, camCollisionRadius, dir, out hit, Mathf.Abs(targetPosition), collisionLayer))
         {
-            float distance = Vector3.Distance(cameraPivot.position, hit.point);
+            float distance = Vector3.Distance(targetTransform.position, hit.point);
             targetPosition = -(distance - camCollisionOffSet);
         }
 
