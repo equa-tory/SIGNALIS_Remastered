@@ -4,7 +4,8 @@ public enum ItemType { Default, Weapon, Usable, Tool }
 public class ItemInfo : ScriptableObject
 {
     public string itemName;
-    public string itemDescription;
+    [TextArea(4,4)] public string itemDescription;
+    [Space]
     public int maxItemAmount;
     public GameObject inventoryModel;
     public Sprite inventoryIcon;

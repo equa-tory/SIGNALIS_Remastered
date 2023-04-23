@@ -26,6 +26,8 @@ public class InputManager : MonoBehaviour
     public bool scope_Input;
     public bool reload_Input;
 
+    public bool inventory_Input;
+
 
     private void Awake()
     {
@@ -51,6 +53,9 @@ public class InputManager : MonoBehaviour
             input.PlayerActions.Scope.canceled += ctx => scope_Input = false;
             
             input.PlayerActions.Reload.performed += ctx => reload_Input = true;
+
+            input.PlayerActions.Inventory.performed += ctx => inventory_Input = true;
+
         }
 
         input.Enable();
@@ -66,10 +71,13 @@ public class InputManager : MonoBehaviour
         MovementInput();
         ShootInput();
         ReloadInput();
+        InventoryInput();
     }
 
     private void MovementInput()
     {
+        if(GameManager.Instance.gameIsPaused) return;
+
         verticalInput = movementInput.y;
         horizontalInput = movementInput.x;
 
@@ -78,6 +86,12 @@ public class InputManager : MonoBehaviour
 
         moveAmount = Mathf.Clamp01(Mathf.Abs(horizontalInput) + Mathf.Abs(verticalInput));
         animatorManager.UpdateAnimatorValues(0, moveAmount, pc.isSprinting);
+    }
+
+    private void InventoryInput(){
+        if(inventory_Input) {
+            inventory_Input = false;
+        }
     }
 
     private void ShootInput()

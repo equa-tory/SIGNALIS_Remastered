@@ -29,6 +29,8 @@ public class CursorManager : MonoBehaviour
 
     private void Update()
     {
+        showCursor = GameManager.Instance.gameIsPaused;
+
         SetCursorVisible();
     }
 

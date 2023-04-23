@@ -20,8 +20,11 @@ public class WeaponHolder : MonoBehaviour
     public Image scope;
     public Sprite dotTexture;
     public Sprite scopeTexture;
+    public float defSpread;
+    public float currentSpread;
     private float scopeSpread;
     public float defScopeSpread;
+    public float shootSpreadMult;
     public float scopeSpreadMult;
     public float maxScopeTimer;
     private float scopeTimer;
@@ -51,6 +54,9 @@ public class WeaponHolder : MonoBehaviour
 
     void Update()
     {
+
+        if(GameManager.Instance.gameIsPaused) return;
+
         //Debug
         if (Input.GetKeyDown(KeyCode.G)) EquipWeapon(pistol);
 
@@ -61,6 +67,11 @@ public class WeaponHolder : MonoBehaviour
 
         if (input.shoot_Input && !currentWeapon.isReloading && scoping && shootCd <= 0)
         {
+            Vector3 _spread = cam.transform.forward;
+            _spread += Random.Range(currentSpread, -currentSpread) * cam.transform.up;
+            _spread += Random.Range(currentSpread, -currentSpread) * cam.transform.right;
+            _spread.Normalize();
+            currentWeapon.shootDir = _spread; 
             currentWeapon.Use();
             if(currentWeapon.currentAmmo > 0) shootCd = currentWeapon.info.maxShootCd;
         }
@@ -89,6 +100,7 @@ public class WeaponHolder : MonoBehaviour
                 scopeTimer = maxScopeTimer;
                 scopeSpread = defScopeSpread;
                 scope.sprite = scopeTexture;
+                currentSpread = defSpread;
             }
             
         }
@@ -104,6 +116,7 @@ public class WeaponHolder : MonoBehaviour
 
         if(scopeTimer > 0 && scopingStarted)
         {
+            currentSpread-=Time.deltaTime * shootSpreadMult;
             scopeTimer -= Time.deltaTime;
             scopeSpread -= Time.deltaTime * scopeSpreadMult;
             scope.rectTransform.sizeDelta = new Vector2(scopeSpread, scopeSpread);

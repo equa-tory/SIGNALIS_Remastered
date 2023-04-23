@@ -58,11 +58,12 @@ public class PlayerController : MonoBehaviour
 
     public void AllMovement()
     {
-        FallingAndLanding();
-
-        if (playerManager.isInteracting) return;
-        if (isJumping) return;
-
+        if(GameManager.Instance.gameIsPaused) {
+            rb.isKinematic = true;
+            return;
+        }
+        else rb.isKinematic = false;
+        
         isWalking = WeaponHolder.Instance.scoping;
 
         Movement();
@@ -95,7 +96,8 @@ public class PlayerController : MonoBehaviour
 
     private void Movement()
     {
-        if (isJumping) return;
+        if(GameManager.Instance.gameIsPaused) return;
+
         moveDir = cam.transform.forward * input.verticalInput;
         moveDir = moveDir + cam.transform.right * input.horizontalInput;
         moveDir.Normalize();

@@ -13,7 +13,7 @@ public class Pistol : Weapon
             noAmmoSound.Play();
 
         }
-        else if (Physics.Raycast(cam.transform.position, cam.transform.forward, out RaycastHit hit, Mathf.Infinity, holder.hitMask))
+        else if (Physics.Raycast(cam.transform.position, shootDir, out RaycastHit hit, Mathf.Infinity, holder.hitMask))
         {
             //FX
             muzzleFlash.Play();
@@ -30,8 +30,6 @@ public class Pistol : Weapon
 
     public override void Reload()
     {
-        Debug.Log("Reloading: " + info.itemName);
-
         reloadSound.Play();
 
         isReloading = true;

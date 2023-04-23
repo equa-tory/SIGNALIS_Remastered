@@ -11,6 +11,8 @@ public abstract class WeaponData : MonoBehaviour
     public bool isReloading;
     public int currentAmmo;
     public float ammoSetCd;
+
+    public Vector3 shootDir;
     
     public Transform shootPos;
     public ParticleSystem muzzleFlash;
