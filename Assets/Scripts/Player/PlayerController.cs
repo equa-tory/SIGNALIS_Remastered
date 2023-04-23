@@ -1,263 +1,192 @@
-//by TheSuspect
-//06.04.2023
-
-using UnityEngine.UI;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
+    PlayerManager playerManager;
+    public AnimatorManager animatorManager;
+    InputManager input;
 
-    public Transform orientation;
-    private Rigidbody rb;
-    
-    [Space]
+    Vector3 moveDir;
+    public Camera cam;
+    Rigidbody rb;
 
-
-    [Header("Heath")]
-
-    public float currentHealth;
-    public float maxHealth = 100f;
-    public Image healthBarImage;
-    public TMP_Text healthText;
-
-
-    [Header("Movement")]
-
-    public float currentSpeed;
-    public float walkSpeed = 7f;
-    public float sprintSpeed = 12f;
-    public float crouchSpeed = 4f;
-
-    [Space]
-
-    Vector3 moveDirection;
-
-    [Space]
-
-    public float maxSlopeAngle = 40f;
-    private RaycastHit slopeHit;
-    private bool extitingSlope;
-
-
-    [Header("Jumping")]
-
-    public float airMultiplayer = 1f;
-    public float groundDrag = .5f;
-    public float jumpForce = 20f;
-    public float jumpCooldwn = 1f;
-    bool readyToJump = true;
-
-    [Space]
-
-    public float playerHeight = 2f;
-    public LayerMask whatIsGround;
-    public bool grounded;
-
+    [Header("Falling")]
+    public float inAirTimer;
+    public float leapingVelocity;
+    public float fallingVelocity;
+    public float rayCastHeightOffSet = 0.5f;
+    public LayerMask groundLayer;
 
     [Header("Statements")]
 
     public MovementState state;
     public enum MovementState
     {
+        jogging,
         walking,
-        crouching,
-        sprinting,
-        air
+        sprinting
     }
 
-    public bool crouching;
+    public bool isSprinting;
+    public bool isWalking;
+    public bool isGrounded;
+    public bool isJumping;
 
+    [Header("Movement Speeds")]
+    public float currentSpeed;
+    public float walkSpeed = 0.5f;
+    public float jogSpeed = 1.5f;
+    public float sprintSpeed = 4.5f;
+    public float rotationSpeed = 15f;
 
-    [Header("Input")]
+    [Header("Jump Speeds")]
+    public float jumpHeight = 3;
+    public float gravityIntensity = -15f;
 
-    //InputManager input;
-
-    public KeyCode jumpKey = KeyCode.Space;
-    public KeyCode crouchKey = KeyCode.X;
-    public KeyCode sprintKey = KeyCode.LeftShift;
+    [Header("Battle")]
+    public ObjTransform camState;
 
 
     private void Awake()
     {
-        SetUp();
+        playerManager = GetComponent<PlayerManager>();
+        input = GetComponent<InputManager>();
+        rb = GetComponent<Rigidbody>();
     }
 
-    private void Update()
+    public void AllMovement()
     {
-        StateHandler();
-        MyInput();
-        SpeedControl();
-    }
+        FallingAndLanding();
 
-    private void FixedUpdate(){
+        if (playerManager.isInteracting) return;
+        if (isJumping) return;
+
+        isWalking = WeaponHolder.Instance.scoping;
+
         Movement();
-    }
-
-    //--------------------------------------------------------------------------------------------------------------------------------
-
-    private void GroundCheck()
-    {
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * .5f + .2f, whatIsGround);
-
-        #region Ground Drag
-        if (grounded) rb.drag = groundDrag;
-        else rb.drag = 0;
-        #endregion
-    }
-
-    private void MyInput()
-    {
-        if (Input.GetKey(jumpKey) && readyToJump && grounded)
-        {
-
-            readyToJump = false;
-
-            Jump();
-
-            Invoke(nameof(ResetJump), jumpCooldwn);
-        }
+        Rotation();
+        StateHandler();
     }
 
     private void StateHandler()
     {
 
-        if (crouching)
-        {
-            currentSpeed = crouchSpeed;
-            state = MovementState.crouching;
-        }
-
-        else if (Input.GetKey(sprintKey))
-        {
-            state = MovementState.sprinting;
-            currentSpeed = sprintSpeed;
-        }
-
-        else if (!Input.GetKey(sprintKey))
+        if (isWalking)
         {
             state = MovementState.walking;
             currentSpeed = walkSpeed;
         }
 
+        else if (input.sprint_Input)
+        {
+            state = MovementState.sprinting;
+            currentSpeed = sprintSpeed;
+        }
+
         else
         {
-            state = MovementState.air;
-            currentSpeed = walkSpeed;
+            state = MovementState.jogging;
+            currentSpeed = jogSpeed;
         }
     }
+
 
     private void Movement()
     {
+        if (isJumping) return;
+        moveDir = cam.transform.forward * input.verticalInput;
+        moveDir = moveDir + cam.transform.right * input.horizontalInput;
+        moveDir.Normalize();
+        moveDir.y = 0;
 
-        moveDirection = orientation.forward * Input.GetAxisRaw("Vertical") 
-            + orientation.right * Input.GetAxisRaw("Horizontal");
+        moveDir = moveDir * currentSpeed;
 
-
-        if (OnSlope() && !extitingSlope)
-        {
-            rb.AddForce(GetSlopeMoveDirection(moveDirection) * currentSpeed * 20f, ForceMode.Force);
-
-            if (rb.velocity.y > 0)
-                rb.AddForce(Vector3.down * 80f, ForceMode.Force);
-        }
-
-        //Realistic Air Speed
-        //airMultiplayer = 1 / currentSpeed;
-
-        if (grounded)
-            rb.AddForce(moveDirection.normalized * currentSpeed * 10f, ForceMode.Force);
-
-        else if (!grounded)
-            rb.AddForce(moveDirection.normalized * currentSpeed * 10f * airMultiplayer, ForceMode.Force);
-
-        rb.useGravity = !OnSlope();
-
-
+        Vector3 movementVelocity = moveDir;
+        rb.velocity = movementVelocity;
     }
 
-    private void SpeedControl()
+    Quaternion targetRot;
+    Quaternion playerRot;
+
+    private void Rotation()
     {
-        if (currentSpeed < 0) currentSpeed = 0;
-
-        if (OnSlope() && !extitingSlope)
+        Vector3 targetDir = Vector3.zero;
+        if (WeaponHolder.Instance.scoping)
         {
-            if (rb.velocity.magnitude > currentSpeed)
-                rb.velocity = rb.velocity.normalized * currentSpeed;
-        }
+            targetDir = cam.transform.forward * 1;
+            targetDir.Normalize();
+            targetDir.y = 0;
 
+            targetRot = Quaternion.LookRotation(targetDir);
+            playerRot = Quaternion.Slerp(transform.rotation, targetRot, rotationSpeed * Time.deltaTime);
+            transform.rotation = playerRot;
+
+        }
         else
         {
-            Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+            targetDir = cam.transform.forward * input.verticalInput;
+            targetDir = targetDir + cam.transform.right * input.horizontalInput;
+            targetDir.Normalize();
+            targetDir.y = 0;
 
-            if (flatVel.magnitude > currentSpeed)
+            if (targetDir == Vector3.zero) targetDir = transform.forward;
+
+            targetRot = Quaternion.LookRotation(targetDir);
+            playerRot = Quaternion.Slerp(transform.rotation, targetRot, rotationSpeed * Time.deltaTime);
+
+            transform.rotation = playerRot;
+        }
+    }
+
+    private void FallingAndLanding()
+    {
+        RaycastHit hit;
+        Vector3 rayCastOrigin = transform.position;
+        rayCastOrigin.y = rayCastOrigin.y + rayCastHeightOffSet;
+
+        if (!isGrounded && !isJumping)
+        {
+            if (!playerManager.isInteracting)
             {
-                Vector3 limitedVel = flatVel.normalized * currentSpeed;
-                rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
+                animatorManager.PlayTargetAnimation("Falling", true);
             }
 
+            inAirTimer = inAirTimer + Time.deltaTime;
+            rb.AddForce(transform.forward * leapingVelocity);
+            rb.AddForce(-Vector3.up * fallingVelocity * inAirTimer);
+        }
+
+        if (Physics.SphereCast(rayCastOrigin, 0.2f, Vector3.down, out hit, 1f, groundLayer))
+        {
+            if (!isGrounded && playerManager.isInteracting)
+            {
+                animatorManager.PlayTargetAnimation("Land", true);
+            }
+
+            Vector3 rayCastHitPoint = hit.point;
+            inAirTimer = 0;
+            isGrounded = true;
+            playerManager.isInteracting = false;
+        }
+        else
+        {
+            isGrounded = false;
         }
     }
 
-    private void Jump()
+    public void Jumping()
     {
-        extitingSlope = true;
-
-        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-
-        rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
-    }
-
-    private void ResetJump()
-    {
-        readyToJump = true;
-
-        extitingSlope = false;
-    }
-
-    public bool OnSlope()
-    {
-        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.3f))
+        if (isGrounded)
         {
-            float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
-            return angle < maxSlopeAngle && angle != 0;
-        }
+            animatorManager.animator.SetBool("isJumping", true);
+            animatorManager.PlayTargetAnimation("Jump", false);
 
-        return false;
-    }
-
-    public Vector3 GetSlopeMoveDirection(Vector3 direction)
-    {
-        return Vector3.ProjectOnPlane(direction, slopeHit.normal).normalized;
-    }
-
-    //--------------------------------------------------------------------------------------------------------------------------------
-
-    private void SetUp()
-    {
-
-        //input = InputManager.Instance;
-
-        rb = GetComponent<Rigidbody>();
-        currentHealth = maxHealth;
-        sprintSpeed = walkSpeed;
-    }
-
-    public void Die()
-    {
-        UnityEngine.SceneManagement.SceneManager.LoadScene(0);
-        Destroy(gameObject);
-    }
-
-    public void TakeDamage(float damage)
-    {
-        currentHealth -= damage;
-
-        //healthText.text = currentHealth + "/" + maxHealth;
-
-        if (currentHealth <= 0)
-        {
-            Die();
+            float jumpingVelocity = Mathf.Sqrt(-2 * gravityIntensity * jumpHeight);
+            Vector3 playerVelocity = moveDir;
+            playerVelocity.y = jumpingVelocity;
+            rb.velocity = playerVelocity;
         }
     }
 }

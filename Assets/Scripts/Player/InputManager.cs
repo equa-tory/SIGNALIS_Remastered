@@ -7,7 +7,7 @@ public class InputManager : MonoBehaviour
     public static InputManager Instance;
 
     PlayerInput input;
-    PlayerLocomotion playerLocomotion;
+    PlayerController pc;
     public AnimatorManager animatorManager;
 
     public Vector2 movementInput;
@@ -30,7 +30,7 @@ public class InputManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        playerLocomotion = GetComponent<PlayerLocomotion>();
+        pc = GetComponent<PlayerController>();
     }
 
     private void OnEnable()
@@ -50,7 +50,7 @@ public class InputManager : MonoBehaviour
             input.PlayerActions.Scope.performed += ctx => scope_Input = true;
             input.PlayerActions.Scope.canceled += ctx => scope_Input = false;
             
-            input.PlayerActions.Reload.performed += ctx => scope_Input = true;
+            input.PlayerActions.Reload.performed += ctx => reload_Input = true;
         }
 
         input.Enable();
@@ -65,7 +65,6 @@ public class InputManager : MonoBehaviour
     {
         MovementInput();
         ShootInput();
-        ScopeInput();
         ReloadInput();
     }
 
@@ -78,7 +77,7 @@ public class InputManager : MonoBehaviour
         cameraInputX = cameraInput.x;
 
         moveAmount = Mathf.Clamp01(Mathf.Abs(horizontalInput) + Mathf.Abs(verticalInput));
-        animatorManager.UpdateAnimatorValues(0, moveAmount, playerLocomotion.isSprinting);
+        animatorManager.UpdateAnimatorValues(0, moveAmount, pc.isSprinting);
     }
 
     private void ShootInput()
@@ -86,14 +85,6 @@ public class InputManager : MonoBehaviour
         if (shoot_Input)
         {
             shoot_Input = false;
-        }
-    }
-
-    private void ScopeInput()
-    {
-        if (scope_Input)
-        {
-            scope_Input = false;
         }
     }
 

@@ -21,3 +21,4 @@ MonoBehaviour:
   critDamage: 30
   maxMagAmmo: 7
   reloadTime: 1
+  maxShootCd: 1

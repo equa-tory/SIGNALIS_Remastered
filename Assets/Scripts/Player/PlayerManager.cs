@@ -7,14 +7,14 @@ public class PlayerManager : MonoBehaviour
     public Animator animator;
     InputManager inputManager;
     public CameraManager cameraManager;
-    PlayerLocomotion playerLocomotion;
+    PlayerController pc;
 
     public bool isInteracting;
 
     private void Awake()
     {
         inputManager = GetComponent<InputManager>();
-        playerLocomotion = GetComponent<PlayerLocomotion>();
+        pc = GetComponent<PlayerController>();
     }
 
     private void Update()
@@ -24,7 +24,7 @@ public class PlayerManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        playerLocomotion.AllMovement();
+        pc.AllMovement();
     }
 
     private void LateUpdate()
@@ -32,7 +32,7 @@ public class PlayerManager : MonoBehaviour
         cameraManager.AllCameraMovement();
 
         isInteracting = animator.GetBool("isInteracting");
-        playerLocomotion.isJumping = animator.GetBool("isJumping");
-        animator.SetBool("isGrounded", playerLocomotion.isGrounded);
+        pc.isJumping = animator.GetBool("isJumping");
+        animator.SetBool("isGrounded", pc.isGrounded);
     }
 }

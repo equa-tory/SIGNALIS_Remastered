@@ -83,7 +83,7 @@
                 {
                     "name": "2D Vector",
                     "id": "b9cb3a5a-6f4c-4776-b181-44deb14c9178",
-                    "path": "2DVector",
+                    "path": "2DVector(mode=2)",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -208,18 +208,9 @@
             "id": "285a0950-4698-4201-810f-2cbfb211c6b9",
             "actions": [
                 {
-                    "name": "Sprint",
-                    "type": "Button",
-                    "id": "bce2b535-b3b2-4324-8f2b-120a63f723ec",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Shoot",
                     "type": "Button",
-                    "id": "e68ac808-0f89-43b3-a741-41c60e9b5c86",
+                    "id": "bce2b535-b3b2-4324-8f2b-120a63f723ec",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -242,35 +233,22 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Sprint",
+                    "type": "Button",
+                    "id": "564324eb-a5a7-460c-a623-8cbff9c5fdaa",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
                 {
                     "name": "",
                     "id": "c7c2338a-81fb-413a-aa1b-861a5b43fa58",
-                    "path": "<Gamepad>/buttonEast",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Sprint",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "4265832c-41de-4d2a-9989-ad25a965e915",
-                    "path": "<Keyboard>/leftShift",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Sprint",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "9c4b171c-6848-4bcc-a99c-62fd213c6598",
-                    "path": "<Mouse>/leftButton",
+                    "path": "<Gamepad>/rightTrigger",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -280,8 +258,8 @@
                 },
                 {
                     "name": "",
-                    "id": "ec74197b-97f3-46d7-9521-d1f79b2a4e04",
-                    "path": "<Gamepad>/rightTrigger",
+                    "id": "4265832c-41de-4d2a-9989-ad25a965e915",
+                    "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -330,6 +308,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Reload",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c2e8b1a8-a914-47e5-bfef-d66f479222b6",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Sprint",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7d2b86d9-64a4-44b6-8d40-73126be0d825",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Sprint",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

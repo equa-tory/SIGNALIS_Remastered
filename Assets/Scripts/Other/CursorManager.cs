@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class CursorManager : MonoBehaviour
 {
-    public static CursorManager Instance;
-
     [SerializeField] private Texture2D currentCursorTexture;
 
     [SerializeField] private Texture2D cursorTexture;
@@ -13,20 +11,12 @@ public class CursorManager : MonoBehaviour
 
     private Vector2 cursorHotspot;
 
-    public float maxScopeTimer;
-    private float scopeTimer;
-
-    bool scoping;
-
-    private int choosedScope;
-
     public bool showCursor;
     public bool showDot;
 
+
     private void Awake()
     {
-        Instance = this;
-
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }

@@ -9,4 +9,5 @@ public class WeaponInfo : ItemInfo
     public float critDamage;
     public int maxMagAmmo;
     public float reloadTime;
+    public float maxShootCd;
 }

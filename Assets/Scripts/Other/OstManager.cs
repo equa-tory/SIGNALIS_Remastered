@@ -22,7 +22,6 @@ public class OstManager : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.T)) source.time = ost[choosedOst].length - 2f;
         if (source.time >= ost[choosedOst].length && !nextOstStarted) { Invoke(nameof(NextOst),1f); nextOstStarted = true; }
     }
 

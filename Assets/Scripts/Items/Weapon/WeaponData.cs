@@ -10,8 +10,20 @@ public abstract class WeaponData : MonoBehaviour
 
     public bool isReloading;
     public int currentAmmo;
+    public float ammoSetCd;
     
     public Transform shootPos;
+    public ParticleSystem muzzleFlash;
+    public ParticleSystem bulletImpact;
+    public ParticleSystem sleeve;
+
+    [Header("Sound")]
+    public AudioSource shootSound;
+    public AudioSource lastShootSound;
+    public AudioSource noAmmoSound;
+    public AudioSource reloadSound;
+    public AudioSource downSound;
+    public AudioSource scopeSound;
 
     [Header("Init Data Ref")]
     [HideInInspector]public WeaponHolder holder;
