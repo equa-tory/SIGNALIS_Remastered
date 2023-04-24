@@ -23,6 +23,8 @@ public class InventoryManager : MonoBehaviour
     public float maxSlotChangeTime;
     private float slotChangeTimer;
 
+    public Transform slotsList;
+
 
     private void Awake() {
         Instance = this;
@@ -65,22 +67,19 @@ public class InventoryManager : MonoBehaviour
 
         //slots hide
 
-        int slot1ToHide = 0;
-        int slot2ToHide = 0;
+        int slotToMove = 0;
 
-        slot1ToHide = selectedSlot + 3;
-        slot2ToHide = selectedSlot + 4;
+        //for(int i = 0; i < slots.Count; i++) slots[i].gameObject.SetActive(true);
 
-        if(slot1ToHide > 6) slot1ToHide = slot1ToHide-7;
-        if(slot2ToHide > 6) slot2ToHide = slot2ToHide-7;
+        slotToMove = selectedSlot + 4;
 
-        for(int i = 0; i < slots.Count; i++) slots[i].gameObject.SetActive(true);
+        if(slotToMove > 6) slotToMove = slotToMove - 7;
 
-        Debug.Log(slot1ToHide);
-        Debug.Log(slot2ToHide);
-        
-        slots[slot1ToHide].gameObject.SetActive(false);
-        slots[slot2ToHide].gameObject.SetActive(false);
+        slots[slotToMove].transform.SetSiblingIndex(0);
+        slots[slotToMove].gameObject.SetActive(true);
+
+        slotsList.GetChild(5).gameObject.SetActive(false);
+        slotsList.GetChild(6).gameObject.SetActive(false);
     }
 
     private void OpenInventory(){

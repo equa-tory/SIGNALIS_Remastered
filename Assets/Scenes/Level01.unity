@@ -1598,6 +1598,7 @@ MonoBehaviour:
   descriptionTitle: {fileID: 0}
   descriptionText: {fileID: 0}
   maxSlotChangeTime: 0
+  slotsList: {fileID: 0}
 --- !u!4 &313829644
 Transform:
   m_ObjectHideFlags: 0
@@ -11238,6 +11239,7 @@ MonoBehaviour:
   descriptionTitle: {fileID: 69859550}
   descriptionText: {fileID: 2092139025}
   maxSlotChangeTime: 0.35
+  slotsList: {fileID: 1502751724}
 --- !u!1001 &5873445062598390131
 PrefabInstance:
   m_ObjectHideFlags: 0
