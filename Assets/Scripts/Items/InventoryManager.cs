@@ -6,7 +6,7 @@ public class InventoryManager : MonoBehaviour
 {
     public List<ItemInfo> items;
 
-    public GameObject inventoryGO;
+    public GameObject[] inventoryGO;
     private bool isOpened;
     private bool isOpening;
 
@@ -24,7 +24,8 @@ public class InventoryManager : MonoBehaviour
     }
     private void ShowInventory(){
         GameManager.Instance.gameIsPaused = isOpened;
-        inventoryGO.SetActive(isOpened);
+
+        for(int i = 0; i < inventoryGO.Length; i++) inventoryGO[i].SetActive(isOpened);
     }
     private void ResetOpening() {isOpening=false;}
 }
