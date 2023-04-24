@@ -7,6 +7,6 @@ public class ItemInfo : ScriptableObject
     [TextArea(4,4)] public string itemDescription;
     [Space]
     public int maxItemAmount;
-    public GameObject inventoryModel;
+    public GameObject inventoryPreviewModel;
     public Sprite inventoryIcon;
 }
