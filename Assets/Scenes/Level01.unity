@@ -1592,13 +1592,20 @@ MonoBehaviour:
   - {fileID: 1537031689}
   - {fileID: 1762923195}
   - {fileID: 1766066}
-  isOpened: 0
-  slots: []
+  isOpened: 1
+  slots:
+  - {fileID: 30442620}
+  - {fileID: 1432241743}
+  - {fileID: 926658539}
+  - {fileID: 1421709575}
+  - {fileID: 1966254265}
+  - {fileID: 1311637965}
+  - {fileID: 392726974}
   selectedSlot: 0
   descriptionTitle: {fileID: 0}
   descriptionText: {fileID: 0}
-  maxSlotChangeTime: 0
-  slotsList: {fileID: 0}
+  maxSlotChangeTime: 0.35
+  slotsList: {fileID: 1502751724}
 --- !u!4 &313829644
 Transform:
   m_ObjectHideFlags: 0
