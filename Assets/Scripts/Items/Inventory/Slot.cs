@@ -9,6 +9,7 @@ public class Slot : MonoBehaviour
     public ItemInfo item;
 
     public bool isEmpty = true;
+    public bool equipped = false;
 
     public TMP_Text slotNameText;
     public Image slotIcon;
@@ -33,6 +34,8 @@ public class Slot : MonoBehaviour
     }
 
     public void AddItemToSlot(ItemInfo newItem, int _amount){
+
+        isEmpty = false;
 
         item = newItem;
         

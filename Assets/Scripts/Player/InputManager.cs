@@ -28,6 +28,9 @@ public class InputManager : MonoBehaviour
 
     public bool inventory_Input;
 
+    public bool use_Input;
+    public bool cancel_Input;
+
 
     private void Awake()
     {
@@ -56,6 +59,10 @@ public class InputManager : MonoBehaviour
 
             input.PlayerActions.Inventory.performed += ctx => inventory_Input = true;
 
+            input.PlayerActions.Use.performed += ctx => use_Input = true;
+            input.PlayerActions.Cancel.performed += ctx => cancel_Input = true;
+            
+
         }
 
         input.Enable();
@@ -72,6 +79,8 @@ public class InputManager : MonoBehaviour
         ShootInput();
         ReloadInput();
         InventoryInput();
+        UseInput();
+        CancelInput();
     }
 
     private void MovementInput()
@@ -91,6 +100,18 @@ public class InputManager : MonoBehaviour
     private void InventoryInput(){
         if(inventory_Input) {
             inventory_Input = false;
+        }
+    }
+    
+    private void UseInput(){
+        if(use_Input){
+            use_Input = false;
+        }
+    }
+
+    private void CancelInput(){
+        if(cancel_Input){
+            cancel_Input = false;
         }
     }
 

@@ -328,6 +328,24 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Use"",
+                    ""type"": ""Button"",
+                    ""id"": ""23cf3f93-b763-4a84-896e-66094e82192e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Cancel"",
+                    ""type"": ""Button"",
+                    ""id"": ""9c696c4b-aaad-43dc-bc87-d60791afaa06"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -440,6 +458,61 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                     ""action"": ""Inventory"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""58ee6e96-d361-4425-bf9d-efb06129fe4c"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Use"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fa06c0f6-7a96-4aa5-bde7-b14fe06d68a7"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Use"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""09ef3bf6-ba8e-42d9-bf88-f5f863cddbb0"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Use"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7ff39dae-de83-4563-9e50-3bc682016ab0"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Cancel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""35ed01cf-3fa3-479c-b09c-17ba508ee17c"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Cancel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -457,6 +530,8 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
         m_PlayerActions_Reload = m_PlayerActions.FindAction("Reload", throwIfNotFound: true);
         m_PlayerActions_Sprint = m_PlayerActions.FindAction("Sprint", throwIfNotFound: true);
         m_PlayerActions_Inventory = m_PlayerActions.FindAction("Inventory", throwIfNotFound: true);
+        m_PlayerActions_Use = m_PlayerActions.FindAction("Use", throwIfNotFound: true);
+        m_PlayerActions_Cancel = m_PlayerActions.FindAction("Cancel", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -562,6 +637,8 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerActions_Reload;
     private readonly InputAction m_PlayerActions_Sprint;
     private readonly InputAction m_PlayerActions_Inventory;
+    private readonly InputAction m_PlayerActions_Use;
+    private readonly InputAction m_PlayerActions_Cancel;
     public struct PlayerActionsActions
     {
         private @PlayerInput m_Wrapper;
@@ -571,6 +648,8 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
         public InputAction @Reload => m_Wrapper.m_PlayerActions_Reload;
         public InputAction @Sprint => m_Wrapper.m_PlayerActions_Sprint;
         public InputAction @Inventory => m_Wrapper.m_PlayerActions_Inventory;
+        public InputAction @Use => m_Wrapper.m_PlayerActions_Use;
+        public InputAction @Cancel => m_Wrapper.m_PlayerActions_Cancel;
         public InputActionMap Get() { return m_Wrapper.m_PlayerActions; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -595,6 +674,12 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                 @Inventory.started -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnInventory;
                 @Inventory.performed -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnInventory;
                 @Inventory.canceled -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnInventory;
+                @Use.started -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnUse;
+                @Use.performed -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnUse;
+                @Use.canceled -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnUse;
+                @Cancel.started -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnCancel;
+                @Cancel.performed -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnCancel;
+                @Cancel.canceled -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnCancel;
             }
             m_Wrapper.m_PlayerActionsActionsCallbackInterface = instance;
             if (instance != null)
@@ -614,6 +699,12 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                 @Inventory.started += instance.OnInventory;
                 @Inventory.performed += instance.OnInventory;
                 @Inventory.canceled += instance.OnInventory;
+                @Use.started += instance.OnUse;
+                @Use.performed += instance.OnUse;
+                @Use.canceled += instance.OnUse;
+                @Cancel.started += instance.OnCancel;
+                @Cancel.performed += instance.OnCancel;
+                @Cancel.canceled += instance.OnCancel;
             }
         }
     }
@@ -630,5 +721,7 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
         void OnReload(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
         void OnInventory(InputAction.CallbackContext context);
+        void OnUse(InputAction.CallbackContext context);
+        void OnCancel(InputAction.CallbackContext context);
     }
 }

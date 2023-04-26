@@ -1,8 +1,9 @@
 using UnityEngine;
 
-public enum ItemType { Default, Weapon, Usable, Tool }
+public enum ItemType { Default, Weapon, Gadjet, Usable, Tool }
 public class ItemInfo : ScriptableObject
 {
+    public ItemType itemType;
     public string itemName;
     [TextArea(4,4)] public string itemDescription;
     [Space]
