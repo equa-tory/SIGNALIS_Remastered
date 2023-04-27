@@ -40,6 +40,8 @@ public class InventoryManager : MonoBehaviour
 
     private void Start() {
         input = InputManager.Instance;
+
+        SetDesctiption();
     }
 
     void Update() {
@@ -60,6 +62,7 @@ public class InventoryManager : MonoBehaviour
         //Inventory Actions
         if(!isOpened) return;
 
+        //Slots Scroll
         if(input.movementInput.x != 0 && !varianceListIsOpened){
 
             switch(input.movementInput.x){
@@ -72,6 +75,7 @@ public class InventoryManager : MonoBehaviour
             }
         }
         
+        //Show and hide variance panel
         if(input.use_Input && !slots[selectedSlot].isEmpty && !varianceListIsOpened){
             varianceList.gameObject.SetActive(true);
             varianceListIsOpened = true;
@@ -124,10 +128,34 @@ public class InventoryManager : MonoBehaviour
             varianceListIsOpened = false;
         }
 
+        //UseItemButtons
         if(input.use_Input && varianceListIsOpened){
-            
+            if(selectedVariance == 0)
+            {
+                if(slots[selectedSlot].item.itemType.ToString() == "Default" || slots[selectedSlot].item.itemType.ToString() == "Usable" || slots[selectedSlot].item.itemType.ToString() == "Tool")
+                {
+
+                }
+                else if (slots[selectedSlot].item.itemType.ToString() == "Weapon" && slots[selectedSlot].equipped)
+                {
+
+                }
+                else if (slots[selectedSlot].item.itemType.ToString() == "Gadjet" && slots[selectedSlot].equipped)
+                {
+
+                }
+                else if (slots[selectedSlot].item.itemType.ToString() == "Weapon" && !slots[selectedSlot].equipped)
+                {
+
+                }
+                else if (slots[selectedSlot].item.itemType.ToString() == "Gadjet" && !slots[selectedSlot].equipped)
+                {
+
+                }
+            }
         }
 
+        //Scrolling Variances
         if(input.movementInput.y != 0 && varianceListIsOpened){
 
             switch(input.movementInput.y){
@@ -150,7 +178,7 @@ public class InventoryManager : MonoBehaviour
 
     }
 
-    private void EquipTool(){
+    private void EquipGadjet(){
 
 
 
@@ -196,6 +224,22 @@ public class InventoryManager : MonoBehaviour
 
     }
 
+    private void SetDesctiption()
+    {
+
+        if(slots[selectedSlot].item == null)
+        {
+            descriptionTitle.text = "";
+            descriptionText.text = "";
+        }
+        else
+        {
+            descriptionTitle.text = slots[selectedSlot].item.itemName;
+            descriptionText.text = slots[selectedSlot].item.itemDescription;
+        }
+
+    }
+
     private void ChangeSlot(int selection){
 
         if(slotChangeTimer <= 0){
@@ -204,10 +248,7 @@ public class InventoryManager : MonoBehaviour
             if(selectedSlot>6) selectedSlot = 0;
             else if(selectedSlot<0) selectedSlot = 6;
 
-            if(slots[selectedSlot].item != null){
-                descriptionTitle.text = slots[selectedSlot].item.itemName;
-                descriptionText.text = slots[selectedSlot].item.itemDescription;
-            }
+            SetDesctiption();
 
             if(selection == 1){
                 slotsList.GetChild(0).SetSiblingIndex(6);

@@ -10,6 +10,13 @@ public class ObjTransform : MonoBehaviour {
 
     public bool onlyPos;
 
+    public bool DebugWeaponHolderSet;
+
+    private void Start()
+    {
+        if (DebugWeaponHolderSet) target = transform.parent.GetChild(0).GetChild(0).GetChild(1).GetChild(0).GetChild(0).GetChild(2).GetChild(0).GetChild(0).GetChild(2).GetChild(0).GetChild(0).GetChild(0);
+    }
+
 
     void Update() {
 
