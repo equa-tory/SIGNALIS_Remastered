@@ -149,6 +149,10 @@ public class WeaponHolder : MonoBehaviour
         Init();
     }
 
+    public void ShowScope(bool value){
+        scope.gameObject.SetActive(value);
+    }
+
     //---------------------------------------------------------------
 
     private void Init(){

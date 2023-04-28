@@ -58,6 +58,10 @@ public class InventoryManager : MonoBehaviour
         input = InputManager.Instance;
 
         SetDesctiption();
+
+        currentWeaponImage.color = new Color(0,0,0,0);
+        currentWeaponText.text = "";
+        currentWeaponAmmoText.text = "";
     }
 
     void Update() {
@@ -96,7 +100,7 @@ public class InventoryManager : MonoBehaviour
             varianceList.gameObject.SetActive(true);
             varianceListIsOpened = true;
             varianceListIsOpening = true;
-            Invoke(nameof(ResetVarianceOpening),.5f);
+            Invoke(nameof(ResetVarianceOpening),.1f);
 
             selectedType = slots[selectedSlot].item.itemType.ToString();
 
@@ -330,7 +334,7 @@ public class InventoryManager : MonoBehaviour
         isOpening = true;
         FadeManager.Instance.Fade();
         isOpened = true;
-        
+
         Invoke(nameof(ShowInventory),.5f);
         Invoke(nameof(ResetOpening),1f);
     }
@@ -348,6 +352,7 @@ public class InventoryManager : MonoBehaviour
     private void ShowInventory(){
         GameManager.Instance.gameIsPaused = isOpened;
         PreviewItem.Instance.SetMaxTimer();
+        WeaponHolder.Instance.ShowScope(!isOpened);
         for(int i = 0; i < inventoryGO.Length; i++) inventoryGO[i].SetActive(isOpened);
     }
 
@@ -362,12 +367,6 @@ public class InventoryManager : MonoBehaviour
         else{
             descriptionTitle.text = "";
             descriptionText.text = "";
-        }
-    }
-
-    private void UpdateSlots(){
-        for(int i = 0; i < slots.Count; i++){
-            //slots[i].
         }
     }
 
