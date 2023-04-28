@@ -58,7 +58,7 @@ public class WeaponHolder : MonoBehaviour
         if(GameManager.Instance.gameIsPaused) return;
 
         //Debug
-        if (Input.GetKeyDown(KeyCode.G)) EquipWeapon(pistol);
+        //if (Input.GetKeyDown(KeyCode.G)) EquipWeapon(pistol);
 
         if (currentWeapon == null) return;
         Scope();
@@ -123,11 +123,28 @@ public class WeaponHolder : MonoBehaviour
         }
     }
 
+    public void MomentumWeaponReload(){
+        if(currentWeapon.currentAmmo < currentWeapon.info.maxMagAmmo){
+            currentWeapon.currentAmmo = currentWeapon.info.maxMagAmmo;
+            currentWeapon.reloadSound.Play();
+        }
+    }
+
     public void EquipWeapon(WeaponData _weapon)
     {
         WeaponData newWeapon = Instantiate(_weapon, transform);
 
         currentWeapon = newWeapon;
+
+        Init();
+    }
+
+    public void UnequipWeapon()
+    {
+
+        Destroy(currentWeapon.gameObject);
+
+        currentWeapon = null;
 
         Init();
     }

@@ -16,8 +16,9 @@ MonoBehaviour:
   itemName: Pistol
   itemDescription: 
   maxItemAmount: 1
-  inventoryPreviewModel: {fileID: 0}
+  inventoryPreviewModel: {fileID: 8621120962453876088, guid: f98926d42e8472348b62b7d991ec871f, type: 3}
   inventoryIcon: {fileID: 21300000, guid: 35d5feeebd0c21440ba2ff8a7d0222e8, type: 3}
+  itemGO: {fileID: 2631800415632879172, guid: e69fb42e0b5dd4c4394124ba9101fdbc, type: 3}
   damage: 20
   critDamage: 30
   maxMagAmmo: 7

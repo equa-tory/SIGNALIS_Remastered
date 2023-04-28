@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
 
@@ -18,8 +19,17 @@ public class InventoryManager : MonoBehaviour
     public int selectedSlot;
     public int selectedVariance;
 
+    public Color[] healthColors;
+
+    public Image currentHealthImage;
+    public Image currentWeaponImage;
+    public Image currentGadjetImage;
+
     public TMP_Text descriptionTitle;
     public TMP_Text descriptionText;
+    public TMP_Text currentWeaponText;
+    public TMP_Text currentWeaponAmmoText;
+    public TMP_Text currentGadjetCountText;
 
     public float maxMoveTime;
     private float slotChangeTimer;
@@ -32,6 +42,12 @@ public class InventoryManager : MonoBehaviour
     public Color selectedVarianceTextColor;
 
     private bool varianceListIsOpened;
+    private bool varianceListIsOpening;
+    private bool isInspecting;
+
+    private string selectedType;
+
+    public GameObject previewPlaceHolder;
 
 
     private void Awake() {
@@ -76,52 +92,16 @@ public class InventoryManager : MonoBehaviour
         }
         
         //Show and hide variance panel
-        if(input.use_Input && !slots[selectedSlot].isEmpty && !varianceListIsOpened){
+        if(input.use_Input && !slots[selectedSlot].isEmpty && !slots[selectedSlot].blocked && !varianceListIsOpened){
             varianceList.gameObject.SetActive(true);
             varianceListIsOpened = true;
+            varianceListIsOpening = true;
+            Invoke(nameof(ResetVarianceOpening),.5f);
 
-            #region Buttons Text Set
-            //Buttons Text Set
-            if(slots[selectedSlot].item.itemType.ToString() == "Default") {
-                varianceList.GetChild(0).GetChild(0).GetComponent<TMP_Text>().text = "Use";
-                varianceList.GetChild(0).GetChild(1).GetComponent<TMP_Text>().text = "Combine";
-                varianceList.GetChild(0).GetChild(2).GetComponent<TMP_Text>().text = "Inspect";
-            }
+            selectedType = slots[selectedSlot].item.itemType.ToString();
 
-            if(slots[selectedSlot].item.itemType.ToString() == "Weapon" && !slots[selectedSlot].equipped) {
-                varianceList.GetChild(0).GetChild(0).GetComponent<TMP_Text>().text = "Equip";
-                varianceList.GetChild(0).GetChild(1).GetComponent<TMP_Text>().text = "Reload";
-                varianceList.GetChild(0).GetChild(2).GetComponent<TMP_Text>().text = "Inspect";
-            }
-            else if(slots[selectedSlot].item.itemType.ToString() == "Weapon" && slots[selectedSlot].equipped){
-                varianceList.GetChild(0).GetChild(0).GetComponent<TMP_Text>().text = "Unequip";
-                varianceList.GetChild(0).GetChild(1).GetComponent<TMP_Text>().text = "Reload";
-                varianceList.GetChild(0).GetChild(2).GetComponent<TMP_Text>().text = "Inspect";
-            }
-
-            if(slots[selectedSlot].item.itemType.ToString() == "Gadjet" && !slots[selectedSlot].equipped) {
-                varianceList.GetChild(0).GetChild(0).GetComponent<TMP_Text>().text = "Equip";
-                varianceList.GetChild(0).GetChild(1).GetComponent<TMP_Text>().text = "Use";
-                varianceList.GetChild(0).GetChild(2).GetComponent<TMP_Text>().text = "Inspect";
-            }
-            else if(slots[selectedSlot].item.itemType.ToString() == "Gadjet" && slots[selectedSlot].equipped){
-                varianceList.GetChild(0).GetChild(0).GetComponent<TMP_Text>().text = "Unequip";
-                varianceList.GetChild(0).GetChild(1).GetComponent<TMP_Text>().text = "Use";
-                varianceList.GetChild(0).GetChild(2).GetComponent<TMP_Text>().text = "Inspect";
-            }
-
-            if(slots[selectedSlot].item.itemType.ToString() == "Usable") {
-                varianceList.GetChild(0).GetChild(0).GetComponent<TMP_Text>().text = "Use";
-                varianceList.GetChild(0).GetChild(1).GetComponent<TMP_Text>().text = "Combine";
-                varianceList.GetChild(0).GetChild(2).GetComponent<TMP_Text>().text = "Inspect";
-            }
-
-            if(slots[selectedSlot].item.itemType.ToString() == "Tool") {
-                varianceList.GetChild(0).GetChild(0).GetComponent<TMP_Text>().text = "Use";
-                varianceList.GetChild(0).GetChild(1).GetComponent<TMP_Text>().text = "Combine";
-                varianceList.GetChild(0).GetChild(2).GetComponent<TMP_Text>().text = "Inspect";
-            }
-            #endregion
+            UpdateVarianceButtons();
+            varianceListIsOpening = true;
         }
         else if(input.cancel_Input && varianceListIsOpened){
             varianceList.gameObject.SetActive(false);
@@ -129,34 +109,32 @@ public class InventoryManager : MonoBehaviour
         }
 
         //UseItemButtons
-        if(input.use_Input && varianceListIsOpened){
-            if(selectedVariance == 0)
+        if(input.use_Input && varianceListIsOpened && !varianceListIsOpening){
+            
+            if (selectedType == "Weapon")
             {
-                if(slots[selectedSlot].item.itemType.ToString() == "Default" || slots[selectedSlot].item.itemType.ToString() == "Usable" || slots[selectedSlot].item.itemType.ToString() == "Tool")
-                {
-
-                }
-                else if (slots[selectedSlot].item.itemType.ToString() == "Weapon" && slots[selectedSlot].equipped)
-                {
-
-                }
-                else if (slots[selectedSlot].item.itemType.ToString() == "Gadjet" && slots[selectedSlot].equipped)
-                {
-
-                }
-                else if (slots[selectedSlot].item.itemType.ToString() == "Weapon" && !slots[selectedSlot].equipped)
-                {
-
-                }
-                else if (slots[selectedSlot].item.itemType.ToString() == "Gadjet" && !slots[selectedSlot].equipped)
-                {
-
-                }
+                if(selectedVariance == 0) EquipWeapon();
+                else if(selectedVariance == 1) ReloadWeapon();
+                else if(selectedVariance == 2) InspectItem();
             }
+            else if (selectedType == "Gadjet")
+            {
+                if(selectedVariance == 0) EquipGadjet();
+                else if(selectedVariance == 1) ReloadWeapon();
+                else if(selectedVariance == 2) InspectItem();
+            }
+            else
+            {
+                if(selectedVariance == 0) UseItem();
+                else if(selectedVariance == 1) CombineItem();
+                else if(selectedVariance == 2) InspectItem();
+            }
+
+            UpdateVarianceButtons();
         }
 
         //Scrolling Variances
-        if(input.movementInput.y != 0 && varianceListIsOpened){
+        if(input.movementInput.y != 0 && varianceListIsOpened && !isInspecting){
 
             switch(input.movementInput.y){
                 case(1):
@@ -167,6 +145,8 @@ public class InventoryManager : MonoBehaviour
                     break;
             }
         }
+
+        if(input.cancel_Input && isInspecting) InspectItem();
             
     }
 
@@ -174,7 +154,29 @@ public class InventoryManager : MonoBehaviour
 
     private void EquipWeapon(){
 
+        if(!slots[selectedSlot].equipped){
+            WeaponHolder.Instance.EquipWeapon(slots[selectedSlot].item.itemGO.GetComponent<WeaponData>());
+            slots[selectedSlot].equipped = true;
+            
+            currentWeaponImage.color = new Color(255,255,255,1);
+            currentWeaponImage.sprite = slots[selectedSlot].item.itemGO.GetComponent<WeaponData>().info.inventoryIcon;
+            currentWeaponText.text = slots[selectedSlot].item.itemName;
+            currentWeaponAmmoText.text = "7/" + slots[selectedSlot].item.itemGO.GetComponent<WeaponData>().info.maxMagAmmo;
+        }
+        else{
+            WeaponHolder.Instance.UnequipWeapon();
+            slots[selectedSlot].equipped = false;
 
+            currentWeaponImage.color = new Color(0,0,0,0);
+            currentWeaponText.text = "";
+            currentWeaponAmmoText.text = "";
+        }
+
+    }
+
+    private void ReloadWeapon(){
+
+        WeaponHolder.Instance.MomentumWeaponReload();
 
     }
 
@@ -198,11 +200,61 @@ public class InventoryManager : MonoBehaviour
 
     private void InspectItem(){
 
-
+        isInspecting = !isInspecting;
+        PreviewItem.Instance.isInspecting = isInspecting;  
 
     }
 
     //-------------------------Inventory Actions-------------------------
+
+    public void UpdateHealthImage(int health){
+
+        currentHealthImage.color = healthColors[health];
+
+    }
+
+    private void UpdateVarianceButtons(){
+        //Buttons Text Set
+            if(selectedType == "Default") {
+                varianceList.GetChild(0).GetChild(0).GetComponent<TMP_Text>().text = "Use";
+                varianceList.GetChild(0).GetChild(1).GetComponent<TMP_Text>().text = "Combine";
+                varianceList.GetChild(0).GetChild(2).GetComponent<TMP_Text>().text = "Inspect";
+            }
+
+            if(selectedType == "Weapon" && !slots[selectedSlot].equipped) {
+                varianceList.GetChild(0).GetChild(0).GetComponent<TMP_Text>().text = "Equip";
+                varianceList.GetChild(0).GetChild(1).GetComponent<TMP_Text>().text = "Reload";
+                varianceList.GetChild(0).GetChild(2).GetComponent<TMP_Text>().text = "Inspect";
+            }
+            else if(selectedType == "Weapon" && slots[selectedSlot].equipped){
+                varianceList.GetChild(0).GetChild(0).GetComponent<TMP_Text>().text = "Unequip";
+                varianceList.GetChild(0).GetChild(1).GetComponent<TMP_Text>().text = "Reload";
+                varianceList.GetChild(0).GetChild(2).GetComponent<TMP_Text>().text = "Inspect";
+            }
+
+            if(selectedType == "Gadjet" && !slots[selectedSlot].equipped) {
+                varianceList.GetChild(0).GetChild(0).GetComponent<TMP_Text>().text = "Equip";
+                varianceList.GetChild(0).GetChild(1).GetComponent<TMP_Text>().text = "Use";
+                varianceList.GetChild(0).GetChild(2).GetComponent<TMP_Text>().text = "Inspect";
+            }
+            else if(selectedType == "Gadjet" && slots[selectedSlot].equipped){
+                varianceList.GetChild(0).GetChild(0).GetComponent<TMP_Text>().text = "Unequip";
+                varianceList.GetChild(0).GetChild(1).GetComponent<TMP_Text>().text = "Use";
+                varianceList.GetChild(0).GetChild(2).GetComponent<TMP_Text>().text = "Inspect";
+            }
+
+            if(selectedType == "Usable") {
+                varianceList.GetChild(0).GetChild(0).GetComponent<TMP_Text>().text = "Use";
+                varianceList.GetChild(0).GetChild(1).GetComponent<TMP_Text>().text = "Combine";
+                varianceList.GetChild(0).GetChild(2).GetComponent<TMP_Text>().text = "Inspect";
+            }
+
+            if(selectedType == "Tool") {
+                varianceList.GetChild(0).GetChild(0).GetComponent<TMP_Text>().text = "Use";
+                varianceList.GetChild(0).GetChild(1).GetComponent<TMP_Text>().text = "Combine";
+                varianceList.GetChild(0).GetChild(2).GetComponent<TMP_Text>().text = "Inspect";
+            }
+    }
 
     private void ChangeVariance(int selection){
 
@@ -258,6 +310,19 @@ public class InventoryManager : MonoBehaviour
             }
 
             slotChangeTimer = maxMoveTime;
+
+            for(int i = 0; i < slots.Count; i++) slotsList.GetChild(i).gameObject.SetActive(true);
+
+            slotsList.GetChild(5).gameObject.SetActive(false);
+            slotsList.GetChild(6).gameObject.SetActive(false);
+
+            if(slots[selectedSlot].isEmpty || slots[selectedSlot].blocked) PreviewItem.Instance.RemoveModel();
+            else if(slots[selectedSlot].item.inventoryPreviewModel != null) PreviewItem.Instance.SetModel(slots[selectedSlot].item.inventoryPreviewModel);
+            else PreviewItem.Instance.SetModel(previewPlaceHolder);
+
+            //Close other actions
+            PreviewItem.Instance.model.rotation = Quaternion.identity;
+            if(isInspecting) InspectItem();
         }
     }
 
@@ -265,6 +330,7 @@ public class InventoryManager : MonoBehaviour
         isOpening = true;
         FadeManager.Instance.Fade();
         isOpened = true;
+        
         Invoke(nameof(ShowInventory),.5f);
         Invoke(nameof(ResetOpening),1f);
     }
@@ -272,17 +338,23 @@ public class InventoryManager : MonoBehaviour
         isOpening = true;
         FadeManager.Instance.Fade();
         isOpened = false;
+
+        varianceList.gameObject.SetActive(false);
+        varianceListIsOpened = false;
+
         Invoke(nameof(ShowInventory),.5f);
         Invoke(nameof(ResetOpening),1f);
     }
     private void ShowInventory(){
         GameManager.Instance.gameIsPaused = isOpened;
-
+        PreviewItem.Instance.SetMaxTimer();
         for(int i = 0; i < inventoryGO.Length; i++) inventoryGO[i].SetActive(isOpened);
     }
-    private void ResetOpening() {isOpening=false;}
 
-    private void UpdateDescription(string _descriptionTitle, string _descriptionText){
+    private void ResetOpening() {isOpening=false;}
+    private void ResetVarianceOpening() {varianceListIsOpening=false;}
+
+    private void UpdateDescriptionText(string _descriptionTitle, string _descriptionText){
         if(_descriptionTitle != null){
             descriptionTitle.text = _descriptionTitle;
             descriptionText.text = _descriptionText;
@@ -312,7 +384,7 @@ public class InventoryManager : MonoBehaviour
                 break;
 
             }
-            else if(slots[i].isEmpty) {
+            else if(slots[i].isEmpty && !slots[i].blocked) {
                 slots[i].AddItemToSlot(newItem, _amount);
                 worldItem.SetAmount(0);
                 break;

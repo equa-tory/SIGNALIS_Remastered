@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IDamageable
 {
     PlayerManager playerManager;
     public AnimatorManager animatorManager;
@@ -11,6 +11,10 @@ public class PlayerController : MonoBehaviour
     Vector3 moveDir;
     public Camera cam;
     Rigidbody rb;
+
+    [Header("Health")]
+    public float currentHealth;
+    public float maxHealth;
 
     [Header("Falling")]
     public float inAirTimer;
@@ -54,6 +58,28 @@ public class PlayerController : MonoBehaviour
         playerManager = GetComponent<PlayerManager>();
         input = GetComponent<InputManager>();
         rb = GetComponent<Rigidbody>();
+        currentHealth = maxHealth;
+    }
+
+    public void TakeDamage(float damage){
+
+        currentHealth-=damage;
+
+        if(currentHealth > 80f) InventoryManager.Instance.UpdateHealthImage(0);
+        else if(currentHealth <= 30f) InventoryManager.Instance.UpdateHealthImage(3);
+        else if(currentHealth <= 60f) InventoryManager.Instance.UpdateHealthImage(2);
+        else if(currentHealth <= 80f) InventoryManager.Instance.UpdateHealthImage(1);
+
+        if(currentHealth<=0) Die();
+
+    }
+
+    private void Update() {
+        if(Input.GetKeyDown(KeyCode.T)) TakeDamage(19);
+    }
+
+    public void Die(){
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Level01");
     }
 
     public void AllMovement()
@@ -92,7 +118,6 @@ public class PlayerController : MonoBehaviour
             currentSpeed = jogSpeed;
         }
     }
-
 
     private void Movement()
     {

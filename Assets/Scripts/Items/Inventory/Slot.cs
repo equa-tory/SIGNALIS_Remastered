@@ -10,6 +10,7 @@ public class Slot : MonoBehaviour
 
     public bool isEmpty = true;
     public bool equipped = false;
+    public bool blocked = false;
 
     public TMP_Text slotNameText;
     public Image slotIcon;
@@ -24,7 +25,7 @@ public class Slot : MonoBehaviour
         slotIcon.color = new Color(1,1,1,1);
 
         if(itemsCount > -1) slotItemsCount.text = itemsCount.ToString();
-        else slotItemsCount.text = "";
+        else slotItemsCount.text = "7/" + item.itemGO.GetComponent<WeaponData>().info.maxMagAmmo;
     }
 
     public int CheckForFreeAmount(int _amount){

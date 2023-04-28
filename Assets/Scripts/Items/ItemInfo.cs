@@ -10,4 +10,6 @@ public class ItemInfo : ScriptableObject
     public int maxItemAmount;
     public GameObject inventoryPreviewModel;
     public Sprite inventoryIcon;
+    [Space]
+    public GameObject itemGO;
 }

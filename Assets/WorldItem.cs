@@ -8,12 +8,6 @@ public class WorldItem : MonoBehaviour
 
     public int amount;
 
-    private void Update() {
-        if(Input.GetKeyDown(KeyCode.V)){
-            PickUp();
-        }
-    }
-
     public void PickUp(){
         InventoryManager.Instance.AddItem(this);
     }
