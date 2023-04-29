@@ -171,6 +171,7 @@ public class InventoryManager : MonoBehaviour
             WeaponHolder.Instance.UnequipWeapon();
             slots[selectedSlot].equipped = false;
 
+            //currentWeaponImage.color = Color.RGBToHSV(new Color(0,0,0,0), out );
             currentWeaponImage.color = new Color(0,0,0,0);
             currentWeaponText.text = "";
             currentWeaponAmmoText.text = "";
